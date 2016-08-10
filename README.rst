@@ -35,8 +35,8 @@ Getting Started
 
 Setting the API key
 ===================
-* Refer to (Google maps API howto)[https://developers.google.com/maps/documentation/javascript/get-api-key] to get your
-api key.
+* Refer to `Google maps API howto <https://developers.google.com/maps/documentation/javascript/get-api-key]>`_ to get
+your API key from Google.
 
 * Providing it to geospy could be done by either:
 * `export GOOGLE_API_KEY=value`
