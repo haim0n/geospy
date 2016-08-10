@@ -80,7 +80,7 @@ Examples
 
 * Generate google map of the location history to out.html::
 
-    $ sudo geospy -O maps
+    $ sudo geospy --api-key 123 -O maps
 
 * Erase all location history::
 

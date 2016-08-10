@@ -23,8 +23,9 @@ WPS_POLL_INTERVAL = 30
 
 NaN = float('nan')
 
-MAPS_TEMPLATE = 'map_template.html'
-MAPS_OUTPUT_FILE = 'out.html'
+CUR_DIR = os.path.dirname(os.path.abspath(__file__))
+MAPS_TEMPLATE = os.path.join(CUR_DIR, 'map_template.html')
+MAPS_OUTPUT_FILE = os.path.join(CUR_DIR, 'out.html')
 
 GOOGLE_API_KEY = None
 
@@ -257,10 +258,11 @@ class PositionServicesScheduler(object):
             try:
                 pos = self.position_q.get(timeout=2)
                 logging.info('got position: {}'.format(pos))
-                db_pos = db_api.Position(service_name=pos.service_name,
-                                         latitude=pos.latitude,
-                                         longitude=pos.longitude,
-                                         accuracy=pos.accuracy)
+                db_pos = db_api.Position(
+                    service_name=db_api.Service(name=pos.service_name),
+                    latitude=pos.latitude,
+                    longitude=pos.longitude,
+                    accuracy=pos.accuracy)
                 self.session.add(db_pos)
                 self.session.commit()
             except Queue.Empty:
@@ -304,7 +306,7 @@ def db_to_maps(session):
     js_lines = []
     for p in session.query(db_api.Position).all():
         js_lines.append(
-            '[\'{}\', \'{}\', \'{}\'],'.format(p.service_name,
+            '[\'{}\', \'{}\', \'{}\'],'.format(p.service.name,
                                                p.latitude,
                                                p.longitude,
                                                p.accuracy))
