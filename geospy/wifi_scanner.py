@@ -4,7 +4,7 @@
 import os
 import subprocess
 
-DEFAULT_INTERFACES = ["wlan0", "wlan1"]
+DEFAULT_INTERFACES = ["wlan0"]
 
 
 # You can add or change the functions to parse the properties of each AP (cell)
