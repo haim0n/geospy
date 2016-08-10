@@ -26,7 +26,7 @@ NaN = float('nan')
 MAPS_TEMPLATE = 'map_template.html'
 MAPS_OUTPUT_FILE = 'out.html'
 
-GOOGLE_API_KEY = 'enter_your_api_key'
+GOOGLE_API_KEY = None
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 class GeoPosition(object):
     def __init__(self, latitude=NaN, longitude=NaN,
@@ -205,13 +205,23 @@ class GooglePositionService(WifiPositionService):
         except OSError as e:
             logging.error('Error while scanning {}'.format(e))
             self._beacons = None
+    
+    def _is_valid_response(self, resp):
+        if not resp:
+            return False
+        if resp.get('error'):
+            return False
+        
+        return True
 
     def poll(self):
         self._scan_beacons()
         if self._beacons:
             position_dict = self._post_position_request()
-            if position_dict:
+            if self._is_valid_response(position_dict):
                 self._set_position(position_dict)
+            else:
+                logging.error('err response: {}'.format(position_dict))
         # TODO: switch to threading.Condition and wake on exit
         time.sleep(self._poll_interval)
 
@@ -265,6 +275,14 @@ def validate_root_permissions():
         exit("You need to have root privileges to run this script.")
 
 
+def validate_api_key(args):
+    global GOOGLE_API_KEY
+    try:
+        GOOGLE_API_KEY = args.api_key or os.environ['GOOGLE_API_KEY']
+    except KeyError:
+        exit('API key was not provided. Set by --api-key or by '
+             'export GOOGLE_API_KEY=')
+
 def get_args():
     arg_parser = argparse.ArgumentParser(description='Location services')
     arg_parser.add_argument('-V', '--verbose', action='store_true',
@@ -273,8 +291,8 @@ def get_args():
                             help='purge all local data', default=False)
 
     arg_parser.add_argument('-O', '--output-db', choices=['csv', 'maps'],
-                            help='output db format')
-
+                           help='output db format')
+    arg_parser.add_argument('-K', '--api-key', help='set api key')
     return arg_parser.parse_args()
 
 
@@ -318,6 +336,7 @@ def parse_args(args):
         if args.output_db == 'maps':
             db_to_maps(session)
             sys.exit(0)
+    validate_api_key(args)
 
 
 def main():
