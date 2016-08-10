@@ -62,12 +62,15 @@ Refer to the utility's help::
 
 Examples
 --------
-* Start getting locations:
-    `$ sudo geospy --api-key 123`
+* Start getting locations::
 
-* Generate google map of the location history to out.html:
-    `$ sudo geospy -O maps`
+    $ sudo geospy --api-key 123
 
-* Erase all location history:
-    `$ sudo geospy -Z`
+* Generate google map of the location history to out.html::
+
+    $ sudo geospy -O maps
+
+* Erase all location history::
+
+    $ sudo geospy -Z
 
