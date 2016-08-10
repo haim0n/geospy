@@ -1,6 +1,6 @@
-===============================
+======
 geospy
-===============================
+======
 
 
 .. image:: https://img.shields.io/pypi/v/geospy.svg
@@ -18,23 +18,57 @@ geospy
      :alt: Updates
 
 
-Locate your Raspberry Pi 
 
+Turn you Raspberry Pi to a Mobile GPS.
 
 * Free software: MIT license
 * Documentation: https://geospy.readthedocs.io.
 
+Installation
+------------
+* Install pip: `sudo apt-get install -y python-pip`
+* Clone the repo: `git clone https://github.com/haim0n/geospy.git`
+* Install the package: `cd geospy; sudo python setup.py install`
 
-Features
+Getting Started
+---------------
+
+Setting the API key
+===================
+* Refer to (Google maps API howto)[https://developers.google.com/maps/documentation/javascript/get-api-key] to get your
+api key.
+
+* Providing it to geospy could be done by either:
+* `export GOOGLE_API_KEY=value`
+* `geospy --api-key value`
+
+Other knobs and switches
+========================
+Refer to the utility's help::
+
+    usage: geospy.py [-h] [-V] [-Z] [-O {csv,maps}] [-K API_KEY]
+
+    Location services
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      -V, --verbose
+      -Z, --purge-db        purge all local data
+      -O {csv,maps}, --output-db {csv,maps}
+                            output db format
+      -K API_KEY, --api-key API_KEY
+                            set api key
+
+
+
+Examples
 --------
+* Start getting locations:
+    `$ sudo geospy --api-key 123`
 
-* TODO
+* Generate google map of the location history to out.html:
+    `$ sudo geospy -O maps`
 
-Credits
----------
-
-This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
-
-.. _Cookiecutter: https://github.com/audreyr/cookiecutter
-.. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
+* Erase all location history:
+    `$ sudo geospy -Z`
 

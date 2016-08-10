@@ -27,6 +27,8 @@ MAPS_TEMPLATE = 'map_template.html'
 MAPS_OUTPUT_FILE = 'out.html'
 
 GOOGLE_API_KEY = None
+
+
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 class GeoPosition(object):
     def __init__(self, latitude=NaN, longitude=NaN,
@@ -205,13 +207,13 @@ class GooglePositionService(WifiPositionService):
         except OSError as e:
             logging.error('Error while scanning {}'.format(e))
             self._beacons = None
-    
+
     def _is_valid_response(self, resp):
         if not resp:
             return False
         if resp.get('error'):
             return False
-        
+
         return True
 
     def poll(self):
@@ -283,6 +285,7 @@ def validate_api_key(args):
         exit('API key was not provided. Set by --api-key or by '
              'export GOOGLE_API_KEY=')
 
+
 def get_args():
     arg_parser = argparse.ArgumentParser(description='Location services')
     arg_parser.add_argument('-V', '--verbose', action='store_true',
@@ -291,7 +294,7 @@ def get_args():
                             help='purge all local data', default=False)
 
     arg_parser.add_argument('-O', '--output-db', choices=['csv', 'maps'],
-                           help='output db format')
+                            help='output db format')
     arg_parser.add_argument('-K', '--api-key', help='set api key')
     return arg_parser.parse_args()
 

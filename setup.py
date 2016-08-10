@@ -20,7 +20,7 @@ test_requirements = [
 setup(
     name='geospy',
     version='0.1.0',
-    description="Locate your Raspberry Pi ",
+    description="Turn you Raspberry Pi to a Mobile GPS.",
     long_description=readme + '\n\n' + history,
     author="[1;5CHaim Daniel",
     author_email='haim.daniel@gmail.com',
@@ -29,7 +29,7 @@ setup(
         'geospy',
     ],
     package_dir={'geospy':
-                 'geospy'},
+                     'geospy'},
     include_package_data=True,
     install_requires=requirements,
     license="MIT license",
@@ -49,5 +49,10 @@ setup(
         'Programming Language :: Python :: 3.5',
     ],
     test_suite='tests',
-    tests_require=test_requirements
+    tests_require=test_requirements,
+    entry_points={
+        'console_scripts': [
+            'geospy = geospy.geospy:main'
+        ]
+    }
 )
