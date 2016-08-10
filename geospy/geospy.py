@@ -258,13 +258,12 @@ class PositionServicesScheduler(object):
             try:
                 pos = self.position_q.get(timeout=2)
                 logging.info('got position: {}'.format(pos))
-                db_pos = db_api.Position(
-                    service_name=db_api.Service(name=pos.service_name),
+                db_api.create_position_entry(
+                    service_name=pos.service_name,
                     latitude=pos.latitude,
                     longitude=pos.longitude,
-                    accuracy=pos.accuracy)
-                self.session.add(db_pos)
-                self.session.commit()
+                    accuracy=pos.accuracy,
+                    session=self.session)
             except Queue.Empty:
                 pass
 

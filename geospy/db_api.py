@@ -22,6 +22,8 @@ class Service(Base):
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
     name = sa.Column(sa.VARCHAR)
 
+    sa.UniqueConstraint(name)
+
 
 class Position(Base):
     __tablename__ = 'positions'
@@ -52,3 +54,18 @@ def db_to_csv(session):
     for p in session.query(Position).all():
         print (('{},' * 6).format(p.id, p.service.name, p.latitude,
                                   p.longitude, p.accuracy, p.timestamp))
+
+
+def create_position_entry(service_name, latitude, longitude, accuracy,
+                          session):
+    service = session.query(Service).filter(
+        Service.name == service_name).first() or Service(name=service_name)
+
+    db_pos = Position(
+        service=service,
+        latitude=latitude,
+        longitude=longitude,
+        accuracy=accuracy)
+
+    session.add(db_pos)
+    session.commit()
