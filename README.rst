@@ -34,6 +34,10 @@ Installation
 
     git clone https://github.com/haim0n/geospy.git
 
+* Install the package dependencies::
+
+    sudo apt-get install -y gpsd gpsd-clients python-gps
+
 * Install the package::
 
     cd geospy; sudo python setup.py install
