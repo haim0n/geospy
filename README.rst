@@ -26,9 +26,17 @@ Turn you Raspberry Pi to a Mobile GPS.
 
 Installation
 ------------
-* Install pip: `sudo apt-get install -y python-pip`
-* Clone the repo: `git clone https://github.com/haim0n/geospy.git`
-* Install the package: `cd geospy; sudo python setup.py install`
+* Install pip::
+
+    sudo apt-get install -y python-pip
+
+* Clone the repo::
+
+    git clone https://github.com/haim0n/geospy.git
+
+* Install the package::
+
+    cd geospy; sudo python setup.py install
 
 Getting Started
 ---------------
