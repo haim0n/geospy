@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html> 
+<head> 
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" /> 
+  <title>Google Maps Multiple Markers</title> 
+  <script src="http://maps.google.com/maps/api/js?sensor=false" 
+          type="text/javascript"></script>
+</head> 
+<body>
+  <div id="map" style="width: 1000px; height: 1000px;"></div>
+
+  <script type="text/javascript">
+    var locations = [
+	@LOCATIONS@
+    ];
+
+    var map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 10,
+      center: new google.maps.LatLng(locations[0][1], locations[0][2]),
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    });
+
+    var infowindow = new google.maps.InfoWindow();
+
+    var marker, i;
+    function create_marker(location_type, lang, long) {
+        var _icon = "http://maps.google.com/mapfiles/ms/icons/red-dot.png";
+        if (location_type == "GooglePositionService") {
+            _icon = "http://maps.google.com/mapfiles/ms/icons/blue-dot.png";
+        }
+        return new google.maps.Marker({
+            position: new google.maps.LatLng(lang, long),
+            map: map,
+            icon: _icon,
+        });
+    }
+
+    for (i = 0; i < locations.length; i++) {
+      marker = create_marker(locations[i][0], locations[i][1], locations[i][2])
+      google.maps.event.addListener(marker, 'click', (function(marker, i) {
+        return function() {
+          infowindow.setContent(locations[i][0]);
+          infowindow.open(map, marker);
+        }
+      })(marker, i));
+    }
+  </script>
+</body>
+</html>
