@@ -45,6 +45,13 @@ Installation
 Getting Started
 ---------------
 
+What You'll Need
+================
+* 1 Raspberry Pi (duh)
+* [optional]: USB gps device like `this one<http://catb.org/gpsd/hardware.html>`_
+* [optional]: WiFi module or dongle
+    * In case you choose the WiFi module, you'll need the Pi to be connected to the internet.
+
 Setting the API key
 ===================
 * Refer to `Google maps API howto <https://developers.google.com/maps/documentation/javascript/get-api-key]>`_ to get your API key from Google.
