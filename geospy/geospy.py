@@ -14,9 +14,9 @@ import threading
 import time
 
 import requests
+import wifi
 
 import db_api
-import wifi_scanner
 
 GPS_POLL_INTERVAL = 10
 WPS_POLL_INTERVAL = 30
@@ -31,7 +31,7 @@ GOOGLE_API_KEY = None
 
 
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-class GeoPosition(object):
+class _GeoPosition(object):
     def __init__(self, latitude=NaN, longitude=NaN,
                  epx=NaN, epy=NaN, accuracy=NaN, service_name=None):
         self.service_name = service_name
@@ -85,12 +85,12 @@ class GpsService(PositionService):
         self._gpsd = None
 
     def _set_position(self):
-        if self._gpsd.fix.mode not in (gps.MODE_2D, gps.MODE_3D):
-            return
         gps_fix = self._gpsd.fix
-        self.position_q.put(GeoPosition(gps_fix.latitude, gps_fix.longitude,
-                                        gps_fix.epx, gps_fix.epy,
-                                        service_name=self.__class__.__name__))
+        if gps_fix.mode not in (gps.MODE_2D, gps.MODE_3D):
+            return
+        self.position_q.put(_GeoPosition(gps_fix.latitude, gps_fix.longitude,
+                                         gps_fix.epx, gps_fix.epy,
+                                         service_name='gps'))
 
     def _wait_for_gpsd(self):
         """ Busy wait for gpsd socket.
@@ -147,8 +147,8 @@ class WifiPositionService(PositionService):
         super(WifiPositionService, self).__init__(position_q, poll_interval)
         self._beacons = []
         self._api_key = api_key
-        self._interfaces = [n for n in netifaces.interfaces() if
-                            n.startswith('wlan')]
+        self._interface = filter(lambda x: x.startswith('wlan'),
+                                 netifaces.interfaces())[0]
         self._api_url = self.base_url + self._api_key
 
     @property
@@ -165,10 +165,15 @@ class GooglePositionService(WifiPositionService):
 
     @classmethod
     def _beacon_to_google_api(cls, beacon):
+        """
+
+        :param beacon: wifi.Cell
+        :return: dict
+        """
         return {
-            "macAddress": beacon['Address'],
-            "signalStrength": beacon['Signal'],
-            "channel": beacon['Channel'],
+            "macAddress": beacon.address,
+            "signalStrength": beacon.signal,
+            "channel": beacon.channel,
         }
 
     def _create_request_data(self):
@@ -188,9 +193,9 @@ class GooglePositionService(WifiPositionService):
     def _set_position(self, pos_dict):
         location = pos_dict['location']
         self.position_q.put(
-            GeoPosition(location['lat'], location['lng'],
-                        accuracy=pos_dict['accuracy'],
-                        service_name=self.__class__.__name__))
+            _GeoPosition(location['lat'], location['lng'],
+                         accuracy=pos_dict['accuracy'],
+                         service_name='google'))
 
     def _post_position_request(self):
         data = self._create_request_data()
@@ -204,12 +209,13 @@ class GooglePositionService(WifiPositionService):
     def _scan_beacons(self):
         logging.debug('scanning nearby wifi beacons')
         try:
-            self._beacons = wifi_scanner.scan(self._interfaces)
+            self._beacons = wifi.Cell.all(self._interface)
         except OSError as e:
             logging.error('Error while scanning {}'.format(e))
             self._beacons = None
 
-    def _is_valid_response(self, resp):
+    @classmethod
+    def _is_valid_response(cls, resp):
         if not resp:
             return False
         if resp.get('error'):

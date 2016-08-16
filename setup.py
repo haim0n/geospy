@@ -10,7 +10,7 @@ with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
 requirements = [
-    # TODO: put package requirements here
+    'requests', 'wifi', 'netifaces', 'sqlalchemy',
 ]
 
 test_requirements = [
@@ -28,8 +28,7 @@ setup(
     packages=[
         'geospy',
     ],
-    package_dir={'geospy':
-                     'geospy'},
+    package_dir={'geospy': 'geospy'},
     include_package_data=True,
     install_requires=requirements,
     license="MIT license",
